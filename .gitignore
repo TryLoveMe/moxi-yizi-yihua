@@ -1,0 +1,12 @@
+# 系统/编辑器
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+.vscode/
+.idea/
+
+# 调试草稿
+tmp_*
+*.log
+node_modules/

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>墨戏 · 一字一画</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="stage">
+  <canvas id="paper"></canvas>
+  <canvas id="bg"></canvas>
+  <canvas id="art"></canvas>
+  <canvas id="reveal"></canvas>
+  <canvas id="ink"></canvas>
+  <canvas id="fg"></canvas>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="aim" id="aim" aria-hidden="true"></div>
+
+  <header class="brand">
+    <div class="seal seal-lg"><span>墨</span><span>戏</span></div>
+    <div class="brandline">一字一画</div>
+  </header>
+
+  <nav class="toolbar">
+    <button type="button" data-act="table">字表</button>
+    <button type="button" data-act="save">存画</button>
+    <button type="button" data-act="clear">清纸</button>
+    <button type="button" data-act="sound" class="active">有声</button>
+  </nav>
+
+  <aside class="falllist" id="falllist"></aside>
+
+  <section class="titlecard" id="titlecard">
+    <h1 class="title">墨<span class="title-seal">一字<br>一画</span>戏</h1>
+    <p class="sub">落笔生境 · 打字成画</p>
+    <p class="hint">在纸上打出一个汉字，它会自己长成一幅水墨</p>
+  </section>
+
+  <div class="composing" id="composing"><span id="composingText"></span><i class="caret"></i></div>
+
+  <div class="pinyincard" id="pinyincard">
+    <div class="keys" id="pinyinKeys"></div>
+    <div class="zi" id="pinyinZi"></div>
+    <div class="gloss" id="pinyinGloss"></div>
+    <div class="words" id="pinyinWords"></div>
+  </div>
+
+  <section class="panel" id="tablePanel">
+    <div class="panel-head">
+      <h2>识字台</h2>
+      <button type="button" data-act="close-table">收起</button>
+    </div>
+    <div class="panel-body" id="tableBody"></div>
+  </section>
+
+  <input id="ime" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="输入汉字">
+
+  <div class="footnote">先在纸上点一下定下落笔处，再打字就长在那儿 · 鼠标划过纸面可搅动墨色 · 输入 风 雨 雪 可换天气</div>
+</div>
+
+<script src="js/pinyin.js"></script>
+<script src="js/draw.js"></script>
+<script src="js/motifs.js"></script>
+<script src="js/ink.js"></script>
+<script src="js/scene.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

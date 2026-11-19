@@ -1,0 +1,195 @@
+:root{
+  --paper:#e9e0cb;
+  --paper-deep:#ded2b6;
+  --ink:#22221e;
+  --ink-soft:#4a4a42;
+  --seal:#a52a2a;
+  --seal-deep:#8d1f22;
+  --kai:"STKaiti","KaiTi","Kaiti SC","楷体","TW-Kai","Kaiti TC",serif;
+  --song:"Songti SC","SimSun","宋体","STSong",serif;
+  --brush:"STXingkai","华文行楷","Xingkai SC","STKaiti","KaiTi","楷体",serif;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#d8cdb2}
+body{
+  font-family:var(--kai);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  -webkit-tap-highlight-color:transparent;
+}
+
+#stage{position:fixed;inset:0;cursor:crosshair;touch-action:none}
+#stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#paper{z-index:1}
+#bg{z-index:2}
+#art{z-index:3}
+#reveal{z-index:3}
+#ink{z-index:4;mix-blend-mode:multiply}
+#fg{z-index:5}
+
+.grain{
+  position:absolute;inset:0;z-index:6;pointer-events:none;opacity:.5;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='180' height='180' filter='url(%23n)' opacity='.22'/></svg>");
+  mix-blend-mode:multiply;
+}
+.vignette{
+  position:absolute;inset:0;z-index:7;pointer-events:none;
+  background:radial-gradient(120% 90% at 50% 42%,rgba(255,252,240,.28),rgba(120,104,74,0) 46%,rgba(96,80,54,.26) 100%);
+}
+
+/* ---------- 落笔准星 ---------- */
+.aim{
+  position:absolute;left:0;top:0;width:34px;height:34px;margin:-17px 0 0 -17px;
+  z-index:8;pointer-events:none;opacity:0;transform:scale(.55);
+  border:1px solid rgba(58,48,34,.42);border-radius:50%;
+  background:radial-gradient(circle,rgba(58,48,34,.14),rgba(58,48,34,0) 68%);
+  transition:opacity .16s ease,transform .16s ease;
+}
+.aim.show{opacity:1;transform:scale(1);animation:aimPulse 1.8s ease-in-out infinite}
+.aim::before,.aim::after{content:"";position:absolute;background:rgba(58,48,34,.38)}
+.aim::before{left:50%;top:-10px;width:1px;height:54px;margin-left:-.5px}
+.aim::after{top:50%;left:-10px;height:1px;width:54px;margin-top:-.5px}
+@keyframes aimPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(58,48,34,.16)}
+  55%{box-shadow:0 0 0 10px rgba(58,48,34,0)}
+}
+
+/* ---------- 左上落款 ---------- */
+.brand{position:absolute;z-index:20;top:26px;left:28px;display:flex;gap:10px;align-items:flex-start;pointer-events:none}
+.seal{
+  display:grid;grid-template-columns:1fr;place-items:center;
+  background:linear-gradient(160deg,#b23234,#8d1f22);
+  color:#f7ecd8;border-radius:3px;
+  box-shadow:0 1px 0 rgba(255,255,255,.35) inset,0 6px 16px -8px rgba(90,20,20,.7);
+  font-family:var(--brush);line-height:1;
+  -webkit-mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><filter id='r'><feTurbulence type='fractalNoise' baseFrequency='.6' numOctaves='3'/><feColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .7 .35'/></filter><rect width='100' height='100' fill='%23fff'/><rect width='100' height='100' filter='url(%23r)' opacity='.5'/></svg>");
+  mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><filter id='r'><feTurbulence type='fractalNoise' baseFrequency='.6' numOctaves='3'/><feColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .7 .35'/></filter><rect width='100' height='100' fill='%23fff'/><rect width='100' height='100' filter='url(%23r)' opacity='.5'/></svg>");
+  -webkit-mask-composite:xor;mask-composite:exclude;
+}
+.seal-lg{width:44px;height:44px;padding:5px;font-size:17px;letter-spacing:0}
+.seal-lg span{display:block}
+.brandline{
+  writing-mode:vertical-rl;font-family:var(--brush);font-size:15px;letter-spacing:6px;
+  color:#6a5c46;opacity:.8;padding-top:2px;
+}
+
+/* ---------- 右上工具 ---------- */
+.toolbar{position:absolute;z-index:20;top:26px;right:28px;display:flex;gap:8px}
+.toolbar button{
+  font-family:var(--kai);font-size:14px;letter-spacing:2px;color:#5d5140;
+  background:rgba(250,246,235,.42);border:1px solid rgba(120,104,78,.35);
+  border-radius:999px;padding:5px 15px;cursor:pointer;
+  transition:background .25s,color .25s,border-color .25s,transform .12s;
+}
+.toolbar button:hover{background:rgba(250,246,235,.8);color:#2f2a22}
+.toolbar button:active{transform:translateY(1px)}
+.toolbar button.active{
+  background:linear-gradient(160deg,#b23234,#8d1f22);color:#f8efdd;border-color:#7c1a1d;
+  box-shadow:0 6px 16px -10px rgba(90,20,20,.9);
+}
+
+/* ---------- 右侧落字列表 ---------- */
+.falllist{
+  position:absolute;z-index:19;top:78px;right:30px;width:58px;
+  display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none;
+}
+.falllist .zi{
+  font-family:var(--brush);font-size:26px;line-height:1;color:#2b2823;
+  text-shadow:0 2px 10px rgba(60,50,30,.25);
+}
+.falllist .py{font-family:var(--song);font-size:11px;color:#7d6f58;letter-spacing:1px;margin-top:-2px}
+.falllist .gap{height:8px}
+.falllist .seal{margin-top:12px;width:30px;height:30px;font-size:11px;padding:3px}
+.falllist .row{display:flex;flex-direction:column;align-items:center;animation:drop .7s cubic-bezier(.2,.8,.25,1) both}
+@keyframes drop{from{opacity:0;transform:translateY(-14px) scale(1.5);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+
+/* ---------- 中央标题卡 ---------- */
+.titlecard{position:absolute;z-index:18;inset:0;display:grid;place-content:center;justify-items:center;gap:0;pointer-events:none;transition:opacity 1.4s ease,transform 1.4s ease}
+.titlecard.hide{opacity:0;transform:scale(1.04)}
+.title{
+  position:relative;margin:0;font-family:var(--brush);font-weight:400;
+  font-size:clamp(76px,13vw,168px);line-height:1;letter-spacing:10px;color:#1d1b17;
+  text-shadow:0 8px 26px rgba(60,50,30,.22);
+}
+.title-seal{
+  position:absolute;left:calc(100% + 14px);top:52%;transform:translateY(-30%);
+  display:block;width:34px;height:56px;padding:6px 4px;
+  font-family:var(--kai);font-size:12px;line-height:1.15;letter-spacing:0;
+  background:linear-gradient(160deg,#b23234,#8d1f22);color:#f7ecd8;border-radius:2px;
+}
+.sub{margin:26px 0 0;font-size:17px;letter-spacing:8px;color:#6d604c}
+.hint{margin:12px 0 0;font-size:14px;letter-spacing:3px;color:#8a7c64}
+
+/* ---------- 输入法候选 ---------- */
+.composing{
+  position:absolute;z-index:21;left:50%;top:58%;transform:translateX(-50%);
+  display:none;align-items:baseline;gap:2px;
+  font-family:var(--song);font-size:26px;color:#3a352c;letter-spacing:2px;
+}
+.composing.show{display:flex}
+.caret{display:inline-block;width:2px;height:26px;background:#3a352c;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* ---------- 底部拼音卡 ---------- */
+.pinyincard{
+  position:absolute;z-index:20;left:50%;bottom:52px;transform:translateX(-50%) translateY(16px);
+  display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;
+  transition:opacity .5s ease,transform .5s ease;pointer-events:none;
+}
+.pinyincard.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.keys{display:flex;gap:7px}
+.key{
+  min-width:38px;padding:7px 10px;border-radius:9px;
+  background:linear-gradient(180deg,#3a3630,#22201c);color:#f2ead8;
+  font-family:var(--song);font-size:22px;line-height:1;
+  box-shadow:0 3px 0 #14120f,0 10px 18px -10px rgba(0,0,0,.6);
+}
+.key.final{background:linear-gradient(180deg,#8d1f22,#6d1518);box-shadow:0 3px 0 #4a0f12,0 10px 18px -10px rgba(90,20,20,.6)}
+.key.whole{background:linear-gradient(180deg,#2f4a63,#1c3245);box-shadow:0 3px 0 #12222f,0 10px 18px -10px rgba(20,40,60,.6)}
+.pinyincard .zi{font-family:var(--brush);font-size:40px;line-height:1;color:#2b2823}
+.pinyincard .gloss{font-size:14px;letter-spacing:2px;color:#6d604c}
+.pinyincard .words{display:flex;gap:10px;font-size:14px;letter-spacing:2px;color:#7a6b54}
+.pinyincard .words b{font-weight:400;padding:2px 10px;border:1px solid rgba(120,104,78,.35);border-radius:999px;background:rgba(250,246,235,.4)}
+
+/* ---------- 字表面板 ---------- */
+.panel{
+  position:absolute;z-index:30;left:50%;top:50%;width:min(760px,92vw);max-height:78vh;
+  transform:translate(-50%,-48%) scale(.96);opacity:0;pointer-events:none;
+  background:rgba(247,242,229,.94);border:1px solid rgba(120,104,78,.4);border-radius:6px;
+  box-shadow:0 30px 80px -30px rgba(60,45,25,.6);backdrop-filter:blur(6px);
+  transition:opacity .3s ease,transform .3s ease;overflow:hidden;display:flex;flex-direction:column;
+}
+.panel.show{opacity:1;transform:translate(-50%,-50%) scale(1);pointer-events:auto}
+.panel-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 10px;border-bottom:1px solid rgba(120,104,78,.22)}
+.panel-head h2{margin:0;font-size:20px;letter-spacing:6px;font-weight:400;color:#3a352c}
+.panel-head button{font-family:var(--kai);font-size:13px;letter-spacing:2px;color:#6d604c;background:none;border:1px solid rgba(120,104,78,.35);border-radius:999px;padding:3px 12px;cursor:pointer}
+.panel-body{padding:14px 20px 20px;overflow:auto}
+.group{margin-bottom:14px}
+.group h3{margin:0 0 8px;font-size:13px;letter-spacing:4px;color:#8a7c64;font-weight:400}
+.cells{display:flex;flex-wrap:wrap;gap:7px}
+.cell{
+  width:56px;padding:6px 0 4px;text-align:center;cursor:pointer;border-radius:4px;
+  border:1px solid rgba(120,104,78,.28);background:rgba(255,253,246,.6);
+  transition:background .2s,transform .12s,border-color .2s;
+}
+.cell:hover{background:#fffdf6;border-color:rgba(141,31,34,.5);transform:translateY(-2px)}
+.cell .c{display:block;font-family:var(--brush);font-size:26px;line-height:1.1;color:#2b2823}
+.cell .p{display:block;font-family:var(--song);font-size:11px;color:#7d6f58}
+
+.footnote{
+  position:absolute;z-index:18;left:50%;bottom:14px;transform:translateX(-50%);
+  font-size:12px;letter-spacing:3px;color:#9a8b72;pointer-events:none;white-space:nowrap;
+}
+
+#ime{position:absolute;z-index:40;left:50%;top:70%;width:2px;height:2px;opacity:0;border:0;padding:0;background:none;color:transparent}
+
+@media (max-width:720px){
+  .brand{top:14px;left:14px}
+  .toolbar{top:14px;right:14px}
+  .toolbar button{font-size:12px;padding:4px 10px;letter-spacing:1px}
+  .falllist{top:58px;right:12px;width:44px}
+  .falllist .zi{font-size:20px}
+  .pinyincard{bottom:34px}
+  .footnote{display:none}
+}
